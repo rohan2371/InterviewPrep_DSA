@@ -3,7 +3,7 @@ Leetcode Link : https://leetcode.com/problems/extra-characters-in-a-string/descr
 
 */
 
-
+// top down insted of using set here we using map 
 class Solution {
 public:
     int dp[51];
@@ -35,5 +35,40 @@ public:
         memset(dp,-1,sizeof(dp));
         return rec(s,0);
 
+    }
+};
+
+
+// top down dp 
+// t.c : 0(n*n*n) and s.c : o(number substring in dictionary)
+
+class Solution {
+public:
+    int dp[51];
+    int minExtraChar(string s, vector<string>& dict) {
+        int n = s.length();
+        unordered_set<string>st(begin(dict),end(dict));
+        
+        memset(dp,-1,sizeof(dp));
+        return solve(0,s,st,n);
+    }
+
+    int solve(int i,string s,unordered_set<string>&st,int  n)
+    {
+        if(i>=n)
+            return 0;
+
+        if(dp[i]!=-1)
+            return dp[i];
+        int result = 1+solve(i+1,s,st,n);
+
+        for(int j=i;j<n;j++){
+            string curr = s.substr(i,j-i+1);
+            if(st.find(curr) != st.end()){
+                result = min(result,solve(j+1,s,st,n));
+            }
+        }
+
+        return dp[i] = result;
     }
 };
